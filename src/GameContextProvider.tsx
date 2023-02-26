@@ -1,15 +1,15 @@
 import { createContext, ReactNode, useMemo, useRef, useState } from 'react'
 import words from './constants/words'
-import { computeNeutralRowState, computeRowState, SquareState } from './utils'
+import { computeNeutralRowState, computeRowState, Square } from './utils'
 
 type NonEmptyString<T extends string = string> = T extends '' ? never : T
 export type IGameContext = {
   correctWord: NonEmptyString
   numRows: number
-  rows: SquareState[][]
+  rows: Square[][]
   currentRow: number
   goToNextRow: () => void
-  handleKeyPress: () => void
+  handleKeyPress: (key: string) => void
 
   gameState: 'playing' | 'lost' | 'won' | 'uninitialized'
 }

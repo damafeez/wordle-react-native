@@ -1,5 +1,7 @@
-export type SquareState = {
-  state: 'empty' | 'neutral' | 'correct' | 'found' | 'wrong'
+export type SquareState = 'empty' | 'neutral' | 'correct' | 'found' | 'wrong'
+
+export type Square = {
+  state: SquareState
   letter: string
 }
 
@@ -7,7 +9,7 @@ export type SquareState = {
 export const computeNeutralRowState = (
   input: string,
   length: number,
-): SquareState[] =>
+): Square[] =>
   Array.from({ length }, (_, i) => input[i]).map(letter => {
     if (letter) return { state: 'neutral', letter }
     return { state: 'empty', letter }
@@ -16,7 +18,7 @@ export const computeNeutralRowState = (
 export const computeRowState = (
   input: string,
   correctWord: string,
-): SquareState[] => {
+): Square[] => {
   const word: (string | undefined)[] = [...correctWord]
   const inputArr = Array.from({ length: word.length }, (_, i) => input[i])
 
@@ -39,4 +41,29 @@ export const computeRowState = (
 
     return { state: 'wrong', letter }
   })
+}
+
+export const computeKeyboardState = (
+  rows: Square[][],
+  hierarchy: Square['state'][] = ['correct', 'found', 'wrong'],
+): Record<string, SquareState> => {
+  const indexMap = hierarchy.reduce(
+    (prev, curr, i) => ({ ...prev, [curr]: i }),
+    {} as Record<Square['state'], number>,
+  )
+  const result: Record<string, SquareState> = {}
+  for (const row of rows) {
+    if (row[0]?.state === 'empty') return result
+
+    row.forEach(({ state, letter }) => {
+      if (
+        hierarchy.includes(state) &&
+        indexMap[state] < (indexMap[result[letter]] ?? Infinity)
+      ) {
+        result[letter] = state
+      }
+    })
+  }
+
+  return result
 }

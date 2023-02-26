@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
-import { SquareState } from '../utils'
+import { Square } from '../utils'
+import { squareStateStyles } from '../constants/styles'
 
-const Row = ({ row }: { row: SquareState[] }) => {
+const Row = ({ row }: { row: Square[] }) => {
   const width = 100 / row.length
 
   return (
@@ -25,29 +26,6 @@ const Row = ({ row }: { row: SquareState[] }) => {
     </View>
   )
 }
-
-const squareStateStyles = StyleSheet.create({
-  empty: {
-    borderWidth: 2,
-    borderColor: '#dee1e9',
-  },
-  neutral: {
-    borderWidth: 2,
-    borderColor: '#a7adc0',
-  },
-  wrong: {
-    backgroundColor: '#a4aec4',
-    color: 'white',
-  },
-  found: {
-    backgroundColor: '#f3c237',
-    color: 'white',
-  },
-  correct: {
-    backgroundColor: '#79b851',
-    color: 'white',
-  },
-})
 
 const styles = StyleSheet.create({
   square: {

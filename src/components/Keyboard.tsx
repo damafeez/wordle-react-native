@@ -1,32 +1,30 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
-
-export const keyBindings = {
-  back: '⌫',
-  enter: '⏎',
-}
-
-const keyRows = [
-  ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  [keyBindings.back, 'z', 'x', 'c', 'v', 'b', 'n', 'm', keyBindings.enter],
-]
+import React, { useContext, useMemo } from 'react'
+import { GameContext } from '../GameContextProvider'
+import { computeKeyboardState } from '../utils'
+import { squareStateStyles } from '../constants/styles'
+import { keyBindings, keyRows } from '../constants/keyboard'
 
 const Keyboard = () => {
+  const { rows, handleKeyPress } = useContext(GameContext)
+  const keyboardState = useMemo(() => computeKeyboardState(rows), [rows])
+
   return (
     <View style={styles.keyboard}>
       {keyRows.map((keyRow, i) => (
         <View style={styles.row} key={i}>
           {keyRow.map(key => (
             <TouchableOpacity
+              onPress={() => handleKeyPress(key)}
               style={[
                 styles.button,
                 ['a', 'l'].includes(key) && {
                   flex: 1,
                 },
                 [keyBindings.back, keyBindings.enter].includes(key) && {
-                  flex: 1.2,
+                  flex: 1.3,
                 },
+                squareStateStyles[keyboardState[key]],
               ]}
               key={key}>
               <Text style={styles.text}>{key}</Text>
