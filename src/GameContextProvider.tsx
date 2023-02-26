@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useMemo, useRef, useState } from 'react'
 import words from './constants/words'
-import { computeRowState, SquareState } from './utils'
+import { computeNeutralRowState, computeRowState, SquareState } from './utils'
 
 type NonEmptyString<T extends string = string> = T extends '' ? never : T
 export type IGameContext = {
@@ -39,8 +39,12 @@ export default function GameContextProvider({
 
   const rows = useMemo(
     () =>
-      rowInputs.map(input => computeRowState(correctWordRef.current, input)),
-    [rowInputs],
+      rowInputs.map((input, i) =>
+        currentRow > i
+          ? computeRowState(input, correctWordRef.current)
+          : computeNeutralRowState(input, correctWordRef.current.length),
+      ),
+    [currentRow, rowInputs],
   )
 
   const goToNextRow = () => {
