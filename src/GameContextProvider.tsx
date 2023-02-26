@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useMemo, useRef, useState } from 'react'
 import { keyBindings } from './constants/keyboard'
+import { Alert } from 'react-native'
 import words from './constants/words'
 import {
   binarySearch,
@@ -54,6 +55,9 @@ export default function GameContextProvider({
     [currentRow, rowInputs],
   )
 
+  // TODO: implement game reset
+  const resetGame = () => undefined
+
   const handleKeyPress = (key: string) => {
     if (gameState !== 'playing') {
       return
@@ -74,16 +78,32 @@ export default function GameContextProvider({
       if (binarySearch(words, rowInputs[currentRow]) > -1) {
         if (rowInputs[currentRow] === correctWordRef.current) {
           setGameState('won')
-          console.log("Hurray! You're a winner.")
+          Alert.alert(
+            "Hurray! You're a rockstar",
+            'Would you like to play again?',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              { text: 'OK', onPress: resetGame },
+            ],
+          )
         }
 
         goToNextRow()
         if (currentRow >= numRows && gameState === 'playing') {
           setGameState('lost')
-          console.log('You lost :(')
+          Alert.alert('Awww, you lost', 'Would you like to play again?', [
+            {
+              text: 'No',
+              style: 'cancel',
+            },
+            { text: 'Yes', onPress: resetGame },
+          ])
         }
       } else {
-        console.log('Word not found.')
+        Alert.alert('Word not found')
       }
     } else if (inputLength && key === keyBindings.back) {
       setRowInputs(oldValue => {
