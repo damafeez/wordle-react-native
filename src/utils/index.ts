@@ -67,3 +67,24 @@ export const computeKeyboardState = (
 
   return result
 }
+
+export const isAlphabet = (s: string): boolean =>
+  s.length === 1 &&
+  ((s.charCodeAt(0) >= 65 && s.charCodeAt(0) <= 90) || // uppercase character
+    (s.charCodeAt(0) >= 97 && s.charCodeAt(0) <= 122)) // lowercase character
+
+export const binarySearch = (arr: string[], value: string) => {
+  let start = 0
+  let end = arr.length - 1
+
+  while (start <= end) {
+    const middle = Math.floor((end + start) / 2)
+    if (arr[middle] === value) return middle
+    // go to right
+    if (arr[middle] < value) start = middle + 1
+    // go to left
+    if (arr[middle] > value) end = middle - 1
+  }
+
+  return -1
+}

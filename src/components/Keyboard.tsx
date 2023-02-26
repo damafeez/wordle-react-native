@@ -27,7 +27,14 @@ const Keyboard = () => {
                 squareStateStyles[keyboardState[key]],
               ]}
               key={key}>
-              <Text style={styles.text}>{key}</Text>
+              <Text
+                style={{
+                  ...styles.text,
+                  // @ts-expect-error TODO: fix this error
+                  color: squareStateStyles[keyboardState[key]]?.color,
+                }}>
+                {key}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -58,5 +65,6 @@ const styles = StyleSheet.create({
   text: {
     textTransform: 'uppercase',
     fontWeight: '600',
+    fontSize: 18,
   },
 })

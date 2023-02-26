@@ -13,15 +13,22 @@ const Row = ({ row }: { row: Square[] }) => {
         gap: 8,
       }}>
       {row.map((square, i) => (
-        <Text
+        <View
           key={i}
           style={{
             ...styles.square,
             ...squareStateStyles[square.state],
             flexBasis: `${width}%`,
           }}>
-          {square.letter}
-        </Text>
+          <Text
+            style={{
+              ...styles.text,
+              // @ts-expect-error TODO: fix this
+              color: squareStateStyles[square.state]?.color,
+            }}>
+            {square.letter}
+          </Text>
+        </View>
       ))}
     </View>
   )
@@ -31,11 +38,16 @@ const styles = StyleSheet.create({
   square: {
     flexShrink: 1,
     aspectRatio: 1,
-    borderWidth: 2,
     borderRadius: 4,
-
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fbfcff',
+  },
+  text: {
+    fontSize: 28,
+    textTransform: 'uppercase',
     color: '#393e4c',
+    fontWeight: 'bold',
   },
 })
 
