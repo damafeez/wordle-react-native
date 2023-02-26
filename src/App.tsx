@@ -3,6 +3,7 @@ import { SafeAreaView, StatusBar, Text, useColorScheme } from 'react-native'
 
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import Board from './components/Board'
+import Keyboard from './components/Keyboard'
 import GameContextProvider from './GameContextProvider'
 
 function App(): JSX.Element {
@@ -32,6 +33,7 @@ function App(): JSX.Element {
         </Text>
 
         <Board />
+        <Keyboard />
       </SafeAreaView>
     </GameContextProvider>
   )
