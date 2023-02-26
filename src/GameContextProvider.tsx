@@ -1,24 +1,24 @@
-import { createContext, ReactNode, useState } from 'react'
+import { createContext, ReactNode, useMemo, useRef, useState } from 'react'
 import words from './constants/words'
+import { computeRowState, SquareState } from './utils'
 
 type NonEmptyString<T extends string = string> = T extends '' ? never : T
-export type GameContextI = {
+export type IGameContext = {
   correctWord: NonEmptyString
   numRows: number
-  rows: string[]
+  rows: SquareState[][]
   currentRow: number
   goToNextRow: () => void
   handleKeyPress: () => void
 
-  gameState: 'playing' | 'lost' | 'won'
+  gameState: 'playing' | 'lost' | 'won' | 'uninitialized'
 }
 
-const numRows = 6 // number of rows
-export const GameContext = createContext<GameContextI>({
+export const GameContext = createContext<IGameContext>({
   correctWord: '',
-  numRows: 6,
-  rows: Array.from({ length: numRows }, () => ''),
-  gameState: 'playing',
+  numRows: 0,
+  rows: [],
+  gameState: 'uninitialized',
   currentRow: 0,
   goToNextRow: () => {},
   handleKeyPress: () => {},
@@ -29,7 +29,20 @@ export default function GameContextProvider({
 }: {
   children: ReactNode
 }) {
+  const numRows = 6 // number of rows
+  const correctWordRef = useRef(words[Math.floor(Math.random() * words.length)]) // get a random word
+
   const [currentRow, setCurrentRow] = useState(0)
+  const [rowInputs, setRowInputs] = useState(
+    Array.from({ length: numRows }, () => ''),
+  )
+
+  const rows = useMemo(
+    () =>
+      rowInputs.map(input => computeRowState(correctWordRef.current, input)),
+    [rowInputs],
+  )
+
   const goToNextRow = () => {
     if (currentRow < numRows - 1) setCurrentRow(currentRow + 1)
   }
@@ -37,9 +50,9 @@ export default function GameContextProvider({
   return (
     <GameContext.Provider
       value={{
-        correctWord: words[Math.floor(Math.random() * words.length)],
+        correctWord: correctWordRef.current,
         numRows,
-        rows: Array.from({ length: numRows }, () => ''),
+        rows,
         currentRow,
         goToNextRow,
         handleKeyPress: () => {},
