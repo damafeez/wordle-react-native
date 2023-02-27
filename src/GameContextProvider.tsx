@@ -58,6 +58,10 @@ export default function GameContextProvider({
   // TODO: implement game reset
   const resetGame = () => undefined
 
+  const goToNextRow = () => {
+    if (currentRow < numRows) setCurrentRow(currentRow + 1)
+  }
+
   const handleKeyPress = (key: string) => {
     if (gameState !== 'playing') {
       return
@@ -73,9 +77,19 @@ export default function GameContextProvider({
 
         return newValue
       })
+    }
+    // backspace
+    else if (inputLength > 0 && key === keyBindings.back) {
+      setRowInputs(oldValue => {
+        const newValue = [...oldValue]
+        newValue[currentRow] = newValue[currentRow].slice(0, -1)
+
+        return newValue
+      })
     } else if (inputLength === numColumns && key === keyBindings.enter) {
       // use binarySearch since words is already sorted
       if (binarySearch(words, rowInputs[currentRow]) > -1) {
+        goToNextRow()
         if (rowInputs[currentRow] === correctWordRef.current) {
           setGameState('won')
           Alert.alert(
@@ -83,16 +97,13 @@ export default function GameContextProvider({
             'Would you like to play again?',
             [
               {
-                text: 'Cancel',
+                text: 'No, cancel',
                 style: 'cancel',
               },
-              { text: 'OK', onPress: resetGame },
+              { text: "Yes, let's go", onPress: resetGame },
             ],
           )
-        }
-
-        goToNextRow()
-        if (currentRow >= numRows && gameState === 'playing') {
+        } else if (currentRow >= numRows - 1) {
           setGameState('lost')
           Alert.alert('Awww, you lost', 'Would you like to play again?', [
             {
@@ -105,18 +116,7 @@ export default function GameContextProvider({
       } else {
         Alert.alert('Word not found')
       }
-    } else if (inputLength && key === keyBindings.back) {
-      setRowInputs(oldValue => {
-        const newValue = [...oldValue]
-        newValue[currentRow] = newValue[currentRow].slice(0, -1)
-
-        return newValue
-      })
     }
-  }
-
-  const goToNextRow = () => {
-    if (currentRow < numRows - 1) setCurrentRow(currentRow + 1)
   }
 
   return (
