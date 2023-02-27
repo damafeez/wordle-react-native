@@ -1,11 +1,9 @@
 import { StyleSheet, View } from 'react-native'
-import React, { useContext } from 'react'
+import React from 'react'
 import Row from './Row'
-import { GameContext } from '../GameContextProvider'
+import { Square } from '../utils'
 
-const Board = () => {
-  const { rows } = useContext(GameContext)
-
+const Board = ({ rows }: { rows: Square[][] }) => {
   return (
     <View style={styles.board}>
       {rows.map((row, i) => (
@@ -19,7 +17,7 @@ const styles = StyleSheet.create({
   board: {
     maxWidth: 700,
     gap: 8,
-    padding: 16,
+    paddingHorizontal: 16,
   },
 })
 

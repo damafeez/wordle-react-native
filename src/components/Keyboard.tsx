@@ -1,12 +1,16 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useMemo } from 'react'
-import { GameContext } from '../GameContextProvider'
-import { computeKeyboardState } from '../utils'
+import React, { useMemo } from 'react'
+import { computeKeyboardState, Square } from '../utils'
 import { squareStateStyles } from '../constants/styles'
 import { keyBindings, keyRows } from '../constants/keyboard'
 
-const Keyboard = () => {
-  const { rows, handleKeyPress } = useContext(GameContext)
+const Keyboard = ({
+  rows,
+  handleKeyPress,
+}: {
+  rows: Square[][]
+  handleKeyPress: (key: string) => void
+}) => {
   const keyboardState = useMemo(() => computeKeyboardState(rows), [rows])
 
   return (
