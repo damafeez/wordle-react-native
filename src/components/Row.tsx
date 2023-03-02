@@ -1,11 +1,9 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
-import { Square } from '../utils'
-import { squareStateStyles } from '../constants/styles'
+import type { ISquare } from '../utils'
+import Square from './Square'
 
-const Row = ({ row }: { row: Square[] }) => {
-  const width = 100 / row.length
-
+export default function Row({ row }: { row: ISquare[] }) {
   return (
     <View
       style={{
@@ -13,42 +11,15 @@ const Row = ({ row }: { row: Square[] }) => {
         gap: 8,
       }}>
       {row.map((square, i) => (
-        <View
+        <Square
           key={i}
+          state={square.state}
           style={{
-            ...styles.square,
-            ...squareStateStyles[square.state],
-            flexBasis: `${width}%`,
+            flex: 1,
           }}>
-          <Text
-            style={{
-              ...styles.text,
-              // @ts-expect-error TODO: fix this
-              color: squareStateStyles[square.state]?.color,
-            }}>
-            {square.letter}
-          </Text>
-        </View>
+          {square.letter}
+        </Square>
       ))}
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  square: {
-    flexShrink: 1,
-    aspectRatio: 1,
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fbfcff',
-  },
-  text: {
-    fontSize: 28,
-    textTransform: 'uppercase',
-    color: '#393e4c',
-    fontWeight: 'bold',
-  },
-})
-
-export default Row

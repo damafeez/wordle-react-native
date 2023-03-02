@@ -1,46 +1,61 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native'
 import React, { useMemo } from 'react'
-import { computeKeyboardState, Square } from '../utils'
-import { squareStateStyles } from '../constants/styles'
+import { computeKeyboardState, ISquare } from '../utils'
+import { getSquareStyle } from '../constants/styles'
 import { keyBindings, keyRows } from '../constants/keyboard'
 
 const Keyboard = ({
   rows,
   handleKeyPress,
 }: {
-  rows: Square[][]
+  rows: ISquare[][]
   handleKeyPress: (key: string) => void
 }) => {
   const keyboardState = useMemo(() => computeKeyboardState(rows), [rows])
+  const isDarkMode = useColorScheme() === 'dark'
 
   return (
     <View style={styles.keyboard}>
       {keyRows.map((keyRow, i) => (
         <View style={styles.row} key={i}>
-          {keyRow.map(key => (
-            <TouchableOpacity
-              onPress={() => handleKeyPress(key)}
-              style={[
-                styles.button,
-                ['a', 'l'].includes(key) && {
-                  flex: 1,
-                },
-                [keyBindings.back, keyBindings.enter].includes(key) && {
-                  flex: 1.3,
-                },
-                squareStateStyles[keyboardState[key]],
-              ]}
-              key={key}>
-              <Text
-                style={{
-                  ...styles.text,
-                  // @ts-expect-error TODO: fix this error
-                  color: squareStateStyles[keyboardState[key]]?.color,
-                }}>
-                {key}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {keyRow.map(key => {
+            const stateStyles = keyboardState[key]
+              ? getSquareStyle(keyboardState[key], isDarkMode)
+              : {
+                  color: isDarkMode ? '#fdfdfd' : undefined,
+                }
+
+            return (
+              <TouchableOpacity
+                onPress={() => handleKeyPress(key)}
+                style={[
+                  styles.button,
+                  { backgroundColor: isDarkMode ? '#808384' : '#dce1ed' },
+                  ['a', 'l'].includes(key) && {
+                    flex: 1,
+                  },
+                  [keyBindings.back, keyBindings.enter].includes(key) && {
+                    flex: 1.3,
+                  },
+                  getSquareStyle(keyboardState[key], isDarkMode),
+                ]}
+                key={key}>
+                <Text
+                  style={{
+                    ...styles.text,
+                    color: stateStyles.color,
+                  }}>
+                  {key}
+                </Text>
+              </TouchableOpacity>
+            )
+          })}
         </View>
       ))}
     </View>
@@ -61,7 +76,6 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     height: 48,
-    backgroundColor: '#dce1ed',
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',

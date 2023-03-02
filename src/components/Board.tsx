@@ -1,9 +1,9 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import Row from './Row'
-import { Square } from '../utils'
+import { ISquare } from '../utils'
 
-const Board = ({ rows }: { rows: Square[][] }) => {
+const Board = ({ rows }: { rows: ISquare[][] }) => {
   return (
     <View style={styles.board}>
       {rows.map((row, i) => (

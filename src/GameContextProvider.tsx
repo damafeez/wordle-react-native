@@ -7,7 +7,7 @@ import {
   computeNeutralRowState,
   computeRowState,
   isAlphabet,
-  Square,
+  ISquare,
 } from './utils'
 
 type NonEmptyString<T extends string = string> = T extends '' ? never : T
@@ -16,7 +16,7 @@ type IGameState = 'playing' | 'lost' | 'won' | 'uninitialized'
 export type IGameContext = {
   correctWord: NonEmptyString
   numRows: number
-  rows: Square[][]
+  rows: ISquare[][]
   currentRow: number
   handleKeyPress: (key: string) => void
   gameState: IGameState
